@@ -1,1 +1,35 @@
+Задание 1.
+Среди регулярных занятий (class_type = ‘regular’) какой процент был успешным (class_status = ‘success’)?
+Вывести: одно число (процент)
+Решение
+select 
+    sum(case when class_status = 'success' then 1.0 else 0.0 end)/count(*) as dolya
+    from skyeng_db.classes
+  where class_type = 'regular'
+
+Задание 2.
+Рассчитайте распределение по странам количества учителей, у которых уровень или Advanced, или Intermediate. Ограничьтесь при выводе только теми странами, в которых количество учителей больше 10.
+Вывести: страна, количество учителей
+Решение
+select t2.country,
+      count (distinct t1.id_teacher) as cnt
+     from skyeng_db.classes t1
+     join skyeng_db.teachers t2
+            on t1.id_teacher = t2.id_teacher
+     where  max_teaching_level = 'Advanced' or max_teaching_level = 'Intermediate'
+ group by t2.country
+ having count (distinct t1.id_teacher) > 10
+
+Задание 3.
+Найдите количество регулярных уроков, которые были проведены в 2016 году и которые вели учителя, которых нет в таблице teachers.
+Вывести: одно число (количество уроков)
+Решение
+select count(*)
+     from skyeng_db.classes t1
+     left join skyeng_db.teachers t2
+            on t1.id_teacher = t2.id_teacher
+    where t2.id_teacher is null
+          and class_type = 'regular'
+          and date_trunc('year', class_start_datetime) = '2016-01-01'
+
 
